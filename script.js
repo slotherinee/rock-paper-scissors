@@ -1,6 +1,7 @@
 let gamesPlayed = 0
 let playerWins = 0
 let computerWins = 0
+const h1 = document.querySelector('h1')
 
 function getComputerChoice() {
   let computedValue = Math.floor(Math.random() * 3) + 1
@@ -37,11 +38,11 @@ function singleRoundPlay(playerSelection, computerSelection) {
 function chooseWinner() {
   if (gamesPlayed === 5) {
     if (playerWins > computerWins) {
-      return 'Player won! Congratulations!'
+      h1.textContent = 'Player won! Congratulations!'
     } else if (playerWins < computerWins) {
-      return 'Computer won! Congratulations!'
+      h1.textContent = 'Computer won! Congratulations!'
     } else {
-      return 'TIES'
+      h1.textContent = 'TIES'
     }
   }
 }
