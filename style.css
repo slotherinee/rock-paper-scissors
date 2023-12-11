@@ -38,6 +38,16 @@ h3 {
   -o-border-radius: 15px;
 }
 
+.button-container.game-over button {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.button-container.game-over #play-again {
+  background-color: #4681f4;
+  cursor: pointer;
+}
+
 #play-again {
   display: none;
 }
