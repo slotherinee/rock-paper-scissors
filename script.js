@@ -1,118 +1,117 @@
-const h1 = document.querySelector('h1')
-const computer = document.getElementById('computer')
-const player = document.getElementById('player')
-const won = document.getElementById('won')
-let gamesPlayed = 0
+let h1 = document.querySelector('h1')
+let buttonsSection = document.querySelector('.buttons')
+let scoreComputerElement = document.querySelector('#scoreComputer')
+let scorePlayerElement = document.querySelector('#scorePlayer')
+let roundResultElement = document.querySelector('#won')
+let computerSelectionElement = document.querySelector('#computerSelection')
+let playerSelectionElement = document.querySelector('#playerSelection')
+let playAgain = document.querySelector('#play-again')
+
+// initial counters
 let playerWins = 0
 let computerWins = 0
+let roundPlayed = 0
+let maxScore = 3
+let maxRounds = 5
+let userChoice
 
-// Get computer's choice
-function getComputerChoice() {
-  const choices = ['Rock', 'Paper', 'Scissors']
-  return choices[Math.floor(Math.random() * choices.length)]
+playAgain.style.display = 'none' // Initially hide the playAgain button
+
+// Add event listener for playAgain button
+playAgain.addEventListener('click', () => {
+  playAgain.style.display = 'none' // Hide the playAgain button again
+  startGameAgain()
+  updateScoreDisplay()
+  h1.textContent = 'Rock Paper Scissors!'
+})
+
+// function to generate computers choice.
+function getComputerSelection() {
+  const options = ['Rock', 'Paper', 'Scissors']
+  return options[Math.floor(Math.random() * options.length)]
 }
 
-// Play a single round
+buttonsSection.addEventListener('click', (e) => {
+  if (roundPlayed < maxRounds) {
+    userChoice = e.target.textContent
+    playRound(userChoice)
+  } else {
+    determineWinner()
+  }
+})
+
 function playRound(playerSelection) {
   // Validate input
   if (!playerSelection) {
-    return { message: 'Please enter your selection: Rock, Paper, or Scissors.' }
+    h1.textContent = 'Please choose your selection: Rock, Paper, or Scissors.'
+    return
   }
 
   // Normalize input
-  playerSelection = playerSelection.toLowerCase()
+  playerSelection = playerSelection ? playerSelection.toLowerCase() : ''
 
-  // Validate player selection
-  if (!['rock', 'paper', 'scissors'].includes(playerSelection)) {
-    return {
-      message: 'Invalid selection. Please enter Rock, Paper, or Scissors.',
-    }
-  }
+  const computerSelection = getComputerSelection().toLowerCase()
 
-  // Get computer selection
-  const computerSelection = getComputerChoice()
+  // Display choices
+  playerSelectionElement.textContent = `Player's selection: ${
+    playerSelection[0].toUpperCase() + playerSelection.slice(1)
+  }`
+  computerSelectionElement.textContent = `Computer's selection: ${
+    computerSelection[0].toUpperCase() + computerSelection.slice(1)
+  }`
 
   // Determine winner
-  let message
   if (playerSelection === computerSelection) {
-    message = "It's a tie!"
+    roundResultElement.textContent = "It's a tie!"
   } else if (
     (playerSelection === 'rock' && computerSelection === 'scissors') ||
     (playerSelection === 'paper' && computerSelection === 'rock') ||
     (playerSelection === 'scissors' && computerSelection === 'paper')
   ) {
-    message = `You win! ${playerSelection} beats ${computerSelection}`
+    roundResultElement.textContent = `Player won this one! ${
+      playerSelection[0].toUpperCase() + playerSelection.slice(1)
+    } beats ${computerSelection[0].toUpperCase() + computerSelection.slice(1)}`
     playerWins++
   } else {
-    message = `You lose! ${computerSelection} beats ${playerSelection}`
+    roundResultElement.textContent = `Player lost this one! ${
+      computerSelection[0].toUpperCase() + computerSelection.slice(1)
+    } beats ${playerSelection[0].toUpperCase() + playerSelection.slice(1)}`
     computerWins++
   }
 
-  // Update game state
-  gamesPlayed++
+  // Update the score
+  updateScoreDisplay()
 
-  // Return round information
-  return {
-    message,
-    playerSelection,
-    computerSelection,
-    gamesPlayed,
-    playerWins,
-    computerWins,
+  roundPlayed++
+
+  if (
+    playerWins === maxScore ||
+    computerWins === maxScore ||
+    roundPlayed === maxRounds
+  ) {
+    determineWinner()
   }
 }
 
-// Update page elements
-function updatePage(roundInfo) {
-  computer.textContent = `Computer selection: ${roundInfo.computerSelection}`
-  player.textContent = `Your selection: ${roundInfo.playerSelection}`
-  won.textContent = `Round ${roundInfo.gamesPlayed}: ${roundInfo.message}`
+function determineWinner() {
+  if (playerWins > computerWins) {
+    h1.textContent = 'Player won the game!'
+  } else if (playerWins < computerWins) {
+    h1.textContent = 'Computer won the game!'
+  } else {
+    h1.textContent = "It's a tie! No winner."
+  }
+
+  playAgain.style.display = 'block' // Show the playAgain button
 }
 
-function startGame() {
-  gamesPlayed = 0
+function startGameAgain() {
   playerWins = 0
   computerWins = 0
-  h1.textContent = 'Rock Paper Scissors'
-
-  // Play all five rounds
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = prompt('Rock | Paper | Scissors', '')
-
-    // Play round and update information
-    const roundInfo = playRound(playerSelection)
-
-    // Update page with round results
-    updatePage(roundInfo)
-
-    // Display winner after each round
-    displayRoundWinner()
-
-    // Check for winner after all rounds
-    if (gamesPlayed === 5) {
-      h1.textContent = declareWinner()
-    }
-  }
+  roundPlayed = 0
 }
 
-// Display winner after each round
-function displayRoundWinner() {
-  if (playerWins > computerWins) {
-    alert('You won this round!')
-  } else if (playerWins < computerWins) {
-    alert('Computer won this round.')
-  } else {
-    alert("It's a tie! No winner this round.")
-  }
-}
-
-// // Declare the winner
-function declareWinner() {
-  if (playerWins > computerWins) {
-    return 'Congratulations! You won the game!'
-  } else if (playerWins < computerWins) {
-    return 'Better luck next time! The computer won.'
-  } else {
-    return "It's a tie! No winner this time."
-  }
+function updateScoreDisplay() {
+  scorePlayerElement.textContent = playerWins
+  scoreComputerElement.textContent = computerWins
 }

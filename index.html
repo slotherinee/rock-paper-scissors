@@ -7,13 +7,29 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>Rock paper scissors</title>
+    <link
+      rel="stylesheet"
+      href="style.css"
+    />
   </head>
   <body>
     <h1>Rock Paper Scissors!</h1>
-    <h3 id="computer"></h3>
-    <h3 id="player"></h3>
-    <h3 id="won"></h3>
-    <button onclick="startGame()">Play</button>
+    <h2>
+      Score: <span id="scoreComputer">0</span>:<span id="scorePlayer">0</span>
+    </h2>
+    <h2>
+      Round result: <span id="won">Computer won! Better luck next time!</span>
+    </h2>
+    <h3 id="computerSelection">Computer's selection: <span></span></h3>
+    <h3 id="playerSelection">Player's selection: <span></span></h3>
+
+    <div class="buttons">
+      <button id="rock">Rock</button>
+      <button id="paper">Paper</button>
+      <button id="scissors">Scissors</button>
+      <button id="play-again">Play again!</button>
+    </div>
+
     <script src="script.js"></script>
   </body>
 </html>
