@@ -1,40 +1,48 @@
-let h1 = document.querySelector('h1')
-let buttonsSection = document.querySelector('.buttons')
-let scoreComputerElement = document.querySelector('#scoreComputer')
-let scorePlayerElement = document.querySelector('#scorePlayer')
-let roundResultElement = document.querySelector('#won')
-let computerSelectionElement = document.querySelector('#computerSelection')
-let playerSelectionElement = document.querySelector('#playerSelection')
-let playAgain = document.querySelector('#play-again')
-let roundResult = document.querySelector('#round-result')
+const elements = {
+  h1: document.querySelector('h1'),
+  buttonsSection: document.querySelector('.buttons'),
+  scoreComputerElement: document.querySelector('#scoreComputer'),
+  scorePlayerElement: document.querySelector('#scorePlayer'),
+  roundResultElement: document.querySelector('#won'),
+  computerSelectionElement: document.querySelector('#computerSelection'),
+  playerSelectionElement: document.querySelector('#playerSelection'),
+  playAgain: document.querySelector('#play-again'),
+  roundResult: document.querySelector('#round-result'),
+}
 
-// initial counters
+// Initial counters
 let gameInProgress = true
 let playerWins = 0
 let computerWins = 0
 let roundPlayed = 0
-let maxScore = 3
-let maxRounds = 5
+const maxScore = 3
+const maxRounds = 5
 let userChoice
 
-buttonsSection.classList.add('button-container')
+elements.buttonsSection.classList.add('button-container')
 
 // Add event listener for playAgain button
-playAgain.addEventListener('click', () => {
+elements.playAgain.addEventListener('click', () => {
+  elements.playAgain.style.display = 'none'
   startGameAgain()
   updateScoreDisplay()
-  h1.textContent = 'Rock Paper Scissors!'
+  elements.h1.textContent = 'Rock Paper Scissors!'
   gameInProgress = true // Enable the buttons for the new game
 })
 
-// function to generate computers choice.
+elements.playAgain.addEventListener('click', () => {
+  elements.playAgain.removeAttribute('style')
+  elements.playAgain.style.display = 'none'
+})
+
+// Function to generate computer's choice
 function getComputerSelection() {
   const options = ['Rock', 'Paper', 'Scissors']
   return options[Math.floor(Math.random() * options.length)]
 }
 
-// check if maxRounds played and lock buttons
-buttonsSection.addEventListener('click', (e) => {
+// Check if maxRounds played and lock buttons
+elements.buttonsSection.addEventListener('click', (e) => {
   if (gameInProgress && roundPlayed < maxRounds) {
     userChoice = e.target.textContent
     playRound(userChoice)
@@ -44,12 +52,13 @@ buttonsSection.addEventListener('click', (e) => {
 })
 
 function playRound(playerSelection) {
-  playerSelectionElement.textContent = ''
-  computerSelectionElement.textContent = ''
+  elements.playerSelectionElement.textContent = ''
+  elements.computerSelectionElement.textContent = ''
 
   // Validate input
   if (!playerSelection) {
-    h1.textContent = 'Please choose your selection: Rock, Paper, or Scissors.'
+    elements.h1.textContent =
+      'Please choose your selection: Rock, Paper, or Scissors.'
     return
   }
   if (playerSelection.toLowerCase() === 'play again!') {
@@ -62,36 +71,23 @@ function playRound(playerSelection) {
   const computerSelection = getComputerSelection().toLowerCase()
 
   // Display choices
-  playerSelectionElement.textContent = `Player's selection: ${
-    playerSelection[0].toUpperCase() + playerSelection.slice(1)
-  }`
-  computerSelectionElement.textContent = `Computer's selection: ${
-    computerSelection[0].toUpperCase() + computerSelection.slice(1)
-  }`
+  displaySelection(
+    elements.playerSelectionElement,
+    "Player's selection",
+    playerSelection
+  )
+  displaySelection(
+    elements.computerSelectionElement,
+    "Computer's selection",
+    computerSelection
+  )
 
   // Determine winner
-  if (playerSelection === computerSelection) {
-    roundResultElement.textContent = "It's a tie!"
-  } else if (
-    (playerSelection === 'rock' && computerSelection === 'scissors') ||
-    (playerSelection === 'paper' && computerSelection === 'rock') ||
-    (playerSelection === 'scissors' && computerSelection === 'paper')
-  ) {
-    roundResultElement.textContent = `Player won this one! ${
-      playerSelection[0].toUpperCase() + playerSelection.slice(1)
-    } beats ${computerSelection[0].toUpperCase() + computerSelection.slice(1)}`
-    playerWins++
-  } else {
-    roundResultElement.textContent = `Player lost this one! ${
-      computerSelection[0].toUpperCase() + computerSelection.slice(1)
-    } beats ${playerSelection[0].toUpperCase() + playerSelection.slice(1)}`
-
-    computerWins++
-  }
+  determineRoundWinner(playerSelection, computerSelection)
 
   // Update the score
   updateScoreDisplay()
-  roundResult.textContent = `Round result: ${roundResultElement.textContent}`
+  elements.roundResult.textContent = `Round result: ${elements.roundResultElement.textContent}`
   roundPlayed++
 
   if (
@@ -103,39 +99,72 @@ function playRound(playerSelection) {
   }
 }
 
+function determineRoundWinner(playerSelection, computerSelection) {
+  if (playerSelection === computerSelection) {
+    elements.roundResultElement.textContent = "It's a tie!"
+  } else if (
+    (playerSelection === 'rock' && computerSelection === 'scissors') ||
+    (playerSelection === 'paper' && computerSelection === 'rock') ||
+    (playerSelection === 'scissors' && computerSelection === 'paper')
+  ) {
+    elements.roundResultElement.textContent = `Player won this one! ${capitalizeFirstLetter(
+      playerSelection
+    )} beats ${capitalizeFirstLetter(computerSelection)}`
+    playerWins++
+  } else {
+    elements.roundResultElement.textContent = `Player lost this one! ${capitalizeFirstLetter(
+      computerSelection
+    )} beats ${capitalizeFirstLetter(playerSelection)}`
+    computerWins++
+  }
+}
+
+function displaySelection(element, label, selection) {
+  element.textContent = `${label}: ${capitalizeFirstLetter(selection)}`
+}
+
 function determineWinner() {
   if (playerWins > computerWins) {
-    h1.textContent = 'Player won the game!'
+    elements.h1.textContent = 'Player won the game!'
   } else if (playerWins < computerWins) {
-    h1.textContent = 'Computer won the game!'
+    elements.h1.textContent = 'Computer won the game!'
   } else {
-    h1.textContent = "It's a tie! No winner."
+    elements.h1.textContent = "It's a tie! No winner."
   }
 
-  playAgain.style.display = 'block'
+  elements.playAgain.style.display = 'block'
   gameInProgress = false
-  buttonsSection.classList.add('game-over')
+  elements.buttonsSection.classList.add('game-over')
 }
 
 function startGameAgain() {
   playerWins = 0
   computerWins = 0
   roundPlayed = 0
-  gameInProgress = true
-  buttonsSection.classList.remove('game-over')
+  gameInProgress = true // Set gameInProgress to true for the new game
+  elements.buttonsSection.classList.remove('game-over')
 
   // Reset selections
-  playerSelectionElement.textContent = ''
-  computerSelectionElement.textContent = ''
+  elements.playerSelectionElement.textContent = ''
+  elements.computerSelectionElement.textContent = ''
 
   // Clear the round result, including "Round result:" string
-  roundResult.textContent = ''
+  elements.roundResultElement.textContent = ''
 
   // Update the score display
   updateScoreDisplay()
+
+  // Enable or disable buttons based on the game status
+  elements.buttonsSection.classList.toggle('disabled', !gameInProgress)
+  userChoice = null
+  elements.playAgain.style.display = 'none'
 }
 
 function updateScoreDisplay() {
-  scorePlayerElement.textContent = playerWins
-  scoreComputerElement.textContent = computerWins
+  elements.scorePlayerElement.textContent = playerWins
+  elements.scoreComputerElement.textContent = computerWins
+}
+
+function capitalizeFirstLetter(str) {
+  return str[0].toUpperCase() + str.slice(1)
 }
