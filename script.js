@@ -19,6 +19,7 @@ const maxScore = 3
 const maxRounds = 5
 let userChoice
 
+elements.playAgain.style.display = 'none'
 elements.buttonsSection.classList.add('button-container')
 
 // Add event listener for playAgain button
