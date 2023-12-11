@@ -15,11 +15,8 @@ let maxScore = 3
 let maxRounds = 5
 let userChoice
 
-playAgain.style.display = 'none' // Initially hide the playAgain button
-
 // Add event listener for playAgain button
 playAgain.addEventListener('click', () => {
-  playAgain.style.display = 'none' // Hide the playAgain button again
   startGameAgain()
   updateScoreDisplay()
   h1.textContent = 'Rock Paper Scissors!'
@@ -31,6 +28,7 @@ function getComputerSelection() {
   return options[Math.floor(Math.random() * options.length)]
 }
 
+// check if maxRounds played
 buttonsSection.addEventListener('click', (e) => {
   if (roundPlayed < maxRounds) {
     userChoice = e.target.textContent
